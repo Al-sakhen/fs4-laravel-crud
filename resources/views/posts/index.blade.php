@@ -11,6 +11,12 @@
 
 <body>
     <div class="container pt-4">
+        <a href="{{ url('posts/create') }}" class="btn btn-success my-4">Create Post</a>
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{session('success') }}
+            </div>
+        @endif
         <table class="table">
 
             <thead>
@@ -19,6 +25,7 @@
                     <th scope="col">Title</th>
                     <th scope="col">Description</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,6 +35,14 @@
                     <td>{{ $post->title }}</td>
                     <td>{{ $post->description }}</td>
                     <td>{{ $post->status ? $post->status : 'bye bye' }}</td>
+                    <td class="d-flex">
+                        <a href="{{ url('posts/edit' , $post->id) }}" class="btn btn-sm btn-info me-2">Edit</a>
+                        <form action="{{ url('posts/delete' , $post->id) }}" method="post">
+                            @method('delete')
+                            @csrf
+                            <button class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
                 </tr>
                 @empty
                 <tr>

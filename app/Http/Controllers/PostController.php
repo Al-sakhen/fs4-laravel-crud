@@ -17,30 +17,68 @@ class PostController extends Controller
         $posts = Post::get(); // eloquent orm
         // dd($posts);
         // dump and die
-        return view('posts' , compact('posts'));
+        return view('posts.index', compact('posts'));
     }
+
+
     public function create()
     {
-        //
+        return view('posts.create');
     }
-    public function store()
+
+
+    public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => ['required' , 'max:30'],
+            'description' => 'required | min:10'
+        ]);
+        // $errors => messages
+        // dd($request->all());
+        Post::create([
+            'title' => $request->title,
+            'description' => $request->description
+        ]);
+
+        return redirect('posts')->with('success' , 'Post Created Successfully');
     }
-    public function edit()
+
+
+    public function edit($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        return view('posts.update', compact('post'));
     }
-    public function update()
+
+
+    public function update(Request $request)
     {
-        //
+        $request->validate([
+            'title' => ['required' , 'max:30'],
+            'description' => 'required | min:10'
+        ]);
+
+        $post = Post::find($request->id);
+        $post->update([
+            'title' => $request->title,
+            'description' => $request->description
+        ]);
+
+        return redirect('posts')->with('success' , 'Post Updated Successfully');
     }
+
+
     public function show()
     {
         //
     }
-    public function delete()
+
+
+    public function delete($id)
     {
-        //
+        $post = Post::findOrFail($id);
+        $post->delete();
+        // $post->destroy();
+        return redirect()->back()->with('success' , 'Post deleted Successfully');
     }
 }
