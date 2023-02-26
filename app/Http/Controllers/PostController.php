@@ -14,10 +14,7 @@ class PostController extends Controller
     // actions usually be => [index , create , store , edit , update ,show , destroy/delete ]
     public function index()
     {
-        // $posts = DB::select("SELECT * FROM `posts`"); // query builder
-        $posts = Post::get(); // eloquent orm
-        // dd($posts);
-        // dump and die
+        $posts = Post::where('status' , '=' , 'not_active')->paginate(20); // eloquent orm
         return view('posts.index', compact('posts'));
     }
 
