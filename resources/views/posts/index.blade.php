@@ -11,7 +11,7 @@
 
 <body>
     <div class="container pt-4">
-        <a href="{{ url('posts/create') }}" class="btn btn-success my-4">Create Post</a>
+        <a href="{{ route('posts.create') }}" class="btn btn-success my-4">Create Post</a>
         @if (session('success'))
             <div class="alert alert-success">
                 {{session('success') }}
@@ -25,6 +25,7 @@
                     <th scope="col">Title</th>
                     <th scope="col">Description</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Image</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -35,9 +36,12 @@
                     <td>{{ $post->title }}</td>
                     <td>{{ $post->description }}</td>
                     <td>{{ $post->status ? $post->status : 'bye bye' }}</td>
+                    <td>
+                        <img src="{{ asset('storage/'. $post->image) }}" alt="{{ $post->title }}" width="100" height="100">
+                    </td>
                     <td class="d-flex">
-                        <a href="{{ url('posts/edit' , $post->id) }}" class="btn btn-sm btn-info me-2">Edit</a>
-                        <form action="{{ url('posts/delete' , $post->id) }}" method="post">
+                        <a href="{{ route('posts.edit' , $post->id) }}" class="btn btn-sm btn-info me-2">Edit</a>
+                        <form action="{{ route('posts.destroy' , $post->id) }}" method="post">
                             @method('delete')
                             @csrf
                             <button class="btn btn-sm btn-danger">Delete</button>

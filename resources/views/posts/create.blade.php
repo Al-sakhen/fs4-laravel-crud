@@ -17,7 +17,7 @@
                 <p>{{ $error }}</p>
             @endforeach
         @endif --}}
-        <form method="post" action="{{ url('/posts/store') }}">
+        <form method="post" action="{{ route('posts.store') }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="title" class="form-label">Title</label>
@@ -33,6 +33,15 @@
                 <label for="description">Description</label>
                 <textarea class="form-control @error('description') is-invalid @enderror" name="description" id="description">{{ old('description') }}</textarea>
                 @error('description')
+                    <div class="invalid-feedback">
+                        {{ $message }}
+                    </div>
+                @enderror
+            </div>
+            <div class="mb-3">
+                <label for="image">Image</label>
+                <input type="file" name="image" class="form-control @error('image') is-invalid @enderror">
+                @error('image')
                     <div class="invalid-feedback">
                         {{ $message }}
                     </div>

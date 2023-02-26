@@ -12,7 +12,7 @@
 <body>
     <div class="container pt-4">
         <h3 class="py-2">Update Post</h3>
-        <form method="post" action="{{ url('/posts/update') }}">
+        <form method="post" action="{{ route('posts.update' , $post->id) }}" enctype="multipart/form-data">
             @csrf
             @method('put')
             <div class="mb-3">
@@ -22,6 +22,15 @@
             <div class="mb-3">
                 <label for="description">Description</label>
                 <textarea class="form-control" name="description" id="description">{{ $post->description }}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="image">Image</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+            <div class="mb-2">
+                @if ($post->image)
+                    <img src="{{ asset('storage/'. $post->image) }}" alt="{{ $post->title }}" width="100" height="100">
+                @endif
             </div>
             <input type="hidden" name="id" value="{{ $post->id }}">
             <button type="submit" class="btn btn-primary">Submit</button>

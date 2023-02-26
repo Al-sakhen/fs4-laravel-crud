@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class PostController extends Controller
 {
@@ -30,17 +31,24 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => ['required' , 'max:30'],
-            'description' => 'required | min:10'
-        ]);
-        // $errors => messages
-        // dd($request->all());
-        Post::create([
-            'title' => $request->title,
-            'description' => $request->description
+            'title' => ['required', 'max:30'],
+            'description' => 'required | min:10',
+            'image' => ['image', 'mimes:png,jpg,jpeg']
         ]);
 
-        return redirect('posts')->with('success' , 'Post Created Successfully');
+        if( $request->hasFile('image') ){
+            $image = $request->file('image'); //UploadedFile
+            $path = $image->store('uploaded_images');
+        }
+
+
+        Post::create([
+            'title' => $request->title,
+            'description' => $request->description,
+            'image' => $path ?? null
+        ]);
+
+        return redirect()->route('posts.index')->with('success', 'Post Created Successfully');
     }
 
 
@@ -54,17 +62,29 @@ class PostController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'title' => ['required' , 'max:30'],
+            'title' => ['required', 'max:30'],
             'description' => 'required | min:10'
         ]);
 
         $post = Post::find($request->id);
+        $old_image = $post->image; //path(truthly) || null(falsy)
+
+        if( $request->hasFile('image') ){
+            $image = $request->file('image'); //UploadedFile
+            $new_image = $image->store('uploaded_images');
+        }
         $post->update([
             'title' => $request->title,
-            'description' => $request->description
+            'description' => $request->description,
+            'image' => $new_image ?? $old_image,
         ]);
 
-        return redirect('posts')->with('success' , 'Post Updated Successfully');
+        // delete old image if there is a new one
+        if($old_image && $request->hasFile('image')){
+            Storage::delete($old_image);
+        }
+
+        return redirect()->route('posts.index')->with('success', 'Post Updated Successfully');
     }
 
 
@@ -74,11 +94,14 @@ class PostController extends Controller
     }
 
 
-    public function delete($id)
+    public function destroy($id)
     {
         $post = Post::findOrFail($id);
         $post->delete();
-        // $post->destroy();
-        return redirect()->back()->with('success' , 'Post deleted Successfully');
+
+        if($post->image){
+            Storage::delete($post->image);
+        }
+        return redirect()->back()->with('success', 'Post deleted Successfully');
     }
 }

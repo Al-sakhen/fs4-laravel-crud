@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
+            $table->text('image')->nullable();
             $table->enum('status' , ['active' ,'not_active'])->default('active');
             // created_at / upadated_at
             $table->timestamps();
