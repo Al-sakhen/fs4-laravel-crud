@@ -21,7 +21,8 @@ class PostFactory extends Factory
         return [
             'title' => fake()->name(),
             'description' => fake()->text(60),
-            'status' => fake()->randomElement(['active', 'not_active'])
+            'status' => fake()->randomElement(['active', 'not_active']),
+            'user_id' => 2
         ];
     }
 }

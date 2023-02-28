@@ -20,21 +20,52 @@ Route::get('/', function () {
 
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\TestController;
+use App\Models\User;
 
 Route::get('/', function () {
     return view('welcome');
 });
 // =====   old routes ======
 // Route::get('/posts', "App\Http\Controllers\PostController@index" );
-// Route::get('/posts', [PostController::class, 'index'])->name('posts.index');
-// Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
-// Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
-// Route::get('/posts/edit/{id}', [PostController::class, 'edit'])->name('posts.edit');
-// Route::put('/posts/update', [PostController::class, 'update'])->name('posts.update');
-// Route::delete('/posts/delete/{id}', [PostController::class, 'delete'])->name('posts.delete');
+
+Route::middleware('test:admin')->controller(PostController::class)->prefix('posts')->name('posts.')->group(function(){
+    Route::get('/', 'index')->name('index');
+    Route::get('/create', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/edit/{id}', 'edit')->name('edit');
+    Route::put('/update', 'update')->name('update');
+    Route::delete('/delete/{id}', 'destroy')->name('destroy');
+});
 
 // ====== new routes =========
-Route::resource('posts' , PostController::class);
+// Route::resource('posts' , PostController::class)->middleware('test:student');
+
+
+Route::get('/test', function(){
+
+    $user = User::withCount('posts')->find(2);
+
+    return $user ;
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //  ============= breeze routes =================

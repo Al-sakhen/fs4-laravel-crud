@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,13 +26,8 @@ class PostController extends Controller
     }
 
 
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $request->validate([
-            'title' => ['required', 'max:30'],
-            'description' => 'required | min:10',
-            'image' => ['image', 'mimes:png,jpg,jpeg']
-        ]);
 
         if( $request->hasFile('image') ){
             $image = $request->file('image'); //UploadedFile
